@@ -20,4 +20,62 @@ paths:
           description: everything is good
         500:
           description: something bad happen
-          
+  /role:
+    get:
+      security:
+      - BearerAuth: []
+      tags:
+        - role
+      responses:
+        200:
+          description: roles data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/searchResponse'
+        500:
+          description: internal server error
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - role
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        201:
+          description: 'a resource is created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createResponse'
+        422:
+          description: invalid input
+        500:
+          description: internal server error
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    'searchResponse':
+      type: object
+      properties:
+        count:
+          type: number
+        data:
+          type: object 
+    'createResponse':
+      type: object
+      properties:
+        _id: 
+          type: string

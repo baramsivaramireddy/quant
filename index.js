@@ -62,11 +62,11 @@ fs.readdirSync(ROUTE_DIR).forEach((file) => {
   const router = require(`${ROUTE_DIR}/${file}`);
 
   console.debug(`Loading router ${ROUTE_DIR}/${file} for route ${routeName}`);
-  console.log(routeName)
   app.use(routeName, router);
 });
-
+dbconnect()
 if (__configurations.ENVIRONMENT == "local") {
+ 
   app.listen(3000, () => {
     console.log("app started on port 3000 in local environment");
   });
