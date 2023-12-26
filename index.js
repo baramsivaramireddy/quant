@@ -72,5 +72,5 @@ if (__configurations.ENVIRONMENT == "local") {
 }
 
 
-console.log(__configurations.MONGO_URI)
+
 module.exports = app;

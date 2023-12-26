@@ -7,6 +7,7 @@ info:
 servers:
   - url: http://localhost:3000
     description: local development
+  - url: https://quant-xi.vercel.app/
 
 tags:
   - name: common
