@@ -20,7 +20,7 @@ paths:
           description: everything is good
         500:
           description: something bad happen
-  /role:
+  /api/role:
     get:
       security:
       - BearerAuth: []
@@ -61,6 +61,69 @@ paths:
           description: invalid input
         500:
           description: internal server error
+  /api/role/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - role
+      responses:
+        200: 
+          description: 'a role'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/findResponse'
+        404:
+          description: 'not found'
+        500:
+          description: internal server error
+    put:
+      security:
+        - BearerAuth: []
+      tags:
+        - role
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        201:
+          description: 'update a resource'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/updateResponse'
+        422:
+          description: "invalid data"
+        500:
+          description: 'internal server error'
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+        - role
+      responses:
+        200: 
+          description: 'deleted a role'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deleteResponse'
+          
+        
 components:
   securitySchemes:
     BearerAuth:
@@ -79,3 +142,18 @@ components:
       properties:
         _id: 
           type: string
+    'deleteResponse':
+      type: object
+      properties:
+        message:
+          type: string
+    'updateResponse':
+      type: object
+      properties:
+        message:
+          type: string
+    'findResponse':
+      type: object
+      properties:
+        data:
+          type: object

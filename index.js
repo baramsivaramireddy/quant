@@ -58,7 +58,7 @@ app.get("/health-check", async (req, res) => {
 });
 
 fs.readdirSync(ROUTE_DIR).forEach((file) => {
-  const routeName = `/${file.substring(0, file.length - 3)}`;
+  const routeName = `/api/${file.substring(0, file.length - 3)}`;
   const router = require(`${ROUTE_DIR}/${file}`);
 
   console.debug(`Loading router ${ROUTE_DIR}/${file} for route ${routeName}`);
