@@ -64,12 +64,13 @@ fs.readdirSync(ROUTE_DIR).forEach((file) => {
   console.debug(`Loading router ${ROUTE_DIR}/${file} for route ${routeName}`);
   app.use(routeName, router);
 });
-dbconnect()
+dbconnect();
 if (__configurations.ENVIRONMENT == "local") {
- 
   app.listen(3000, () => {
     console.log("app started on port 3000 in local environment");
   });
 }
 
+
+console.log(__configurations.MONGO_URI)
 module.exports = app;
