@@ -11,6 +11,8 @@ servers:
 
 tags:
   - name: common
+  - name: user
+  - name: role
 paths:
   /health-check:
     get:
@@ -124,7 +126,138 @@ paths:
               schema:
                 $ref: '#/components/schemas/deleteResponse'
           
+  /api/user:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - user
+      responses:
+        200:
+          description: 'all resource'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/searchResponse'
+  /api/user/signup:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                  description: minimum 8 charaters
+      responses:
+        201:
+          description: 'created successfully'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createResponse'
+        409:
+          description: 'user already exist'
+        500:
+          description: 'internal server error'
+  /api/user/login:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        404:
+          description: 'user does not exist'
+        401:
+          description: 'password invalid'
+        200:
+          description: 'successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        500:
+          description: 'internal server error'
+          
+  /api/user/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+        - user
+      responses:
+        200:
+          description: 'success'
+        500:
+          description: 'internal server error'
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - user
+      responses:
+        200: 
+          description: 'success'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/searchResponse'
+        404:
+          description: 'not found'
+    patch:
+      security:
+        - BearerAuth: []
+      tags:
+        - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                roles:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        201:
+          description: 'updated successfully'
+        404:
+          description: 'not found'
+
         
+    
 components:
   securitySchemes:
     BearerAuth:

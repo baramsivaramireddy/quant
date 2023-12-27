@@ -51,7 +51,7 @@ module.exports = {
 
   search: async function (req, res) {
     try {
-      const resources = await User.find({}, "-password").populate("role");
+      const resources = await User.find({}, "-password").populate("roles");
       res.status(200).json({
         count: resources.length,
         data: resources,
@@ -87,7 +87,7 @@ module.exports = {
         email: z.string().email(),
         password: z.string().min(8),
       });
-      const parsedResponse = UserSchema.safeParse(req.body);
+      const parsedResponse = UserLogin.safeParse(req.body);
 
       if (!parsedResponse.success) {
         res.status(422).json({ message: "invalid data" });
@@ -134,4 +134,19 @@ module.exports = {
       });
     }
   },
+  update: async function (req,res) {
+    try{
+        let ExistedResource = await User.findByIdAndUpdate(req.params.id,{name:req.body.name ,roles: req.body.roles})
+        console.log(ExistedResource)
+        if (ExistedResource == null) {
+          res.status(404).json({ message: "user does not exist" });
+          return;
+        }
+        res.status(201).json({message:'updated successfully'})    
+    }catch(err){
+      console.log(`error while updating user ${err}`)
+      res.status(500).json({message:'internal server error'})
+
+    }
+  }
 };

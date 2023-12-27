@@ -60,30 +60,10 @@ module.exports = {
     }
   },
   update: async function (req, res) {
-    const parseResponse = roleSchema.safeParse(req.body);
-
-    if (!parseResponse.success) {
-      res.status(422).json({ message: "invalid data" });
-    }
-    try {
-      const updateDoc = await Role.findByIdAndUpdate(
-        req.params.id,
-        parseResponse.data
-      );
-      if (updateDoc == null) {
-        res.status(404).json({ message: "not found" });
-        return;
-      }
-
-      res.status(201).json({
-        message: "updated successfully",
-      });
-    } catch (err) {
-      console.log(`Error while updating the role ${err}`);
-      res.status(500).json({
-        message: "internal server error",
-      });
-    }
+    
+    // password update
+    // all profile update
+    
   },
   delete: async function (req, res) {
     try {
