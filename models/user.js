@@ -1,26 +1,38 @@
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const userSchema = mongoose.Schema({
-
-    email:{
-        type: string,
-        unique: true,
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const userSchema = mongoose.Schema(
+  {
+    email: {
+      type: String,
+      unique: true,
     },
     name: {
-        type: string,
+      type: String,
     },
-    password:{
-        type:string,
+    password: {
+      type: String,
     },
-    role:{
-        type: mongoose.ObjectId,
-        ref: 'role'
-    }
-},{timestamps:true})
+    roles: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "role",
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
-userSchema.methods.generateToken = function (){
-    let token ='';
-    return token
-}
+userSchema.methods.generateToken = async function () {
+  let token = "";
+  let user = await this.populate("roles");
+  let roleNames = user.roles.map((role)=>{
+    return role.name
+  })
+  let payload = { _id: user._id, roles: roleNames };
+  
+  token = jwt.sign(payload, __configurations.SECRET_KEY);
+  console.log(token)
+  return token;
+};
 
-modules.export = mongoose.model('user',userSchema);
+module.exports = mongoose.model("user", userSchema);

@@ -88,7 +88,7 @@ module.exports = {
   delete: async function (req, res) {
     try {
       const deletedDoc = await Role.findByIdAndDelete(req.params.id);
-      console.log(deletedDoc);
+
       res.status(200).json({
         message: "delete successfully",
       });
