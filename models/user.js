@@ -31,7 +31,7 @@ userSchema.methods.generateToken = async function () {
   let payload = { _id: user._id, roles: roleNames };
   
   token = jwt.sign(payload, __configurations.SECRET_KEY);
-  console.log(token)
+
   return token;
 };
 

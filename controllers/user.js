@@ -3,7 +3,7 @@ const path = require("path");
 const User = require(path.resolve(DB_MODEL, "user"));
 
 const Role = require(path.resolve(DB_MODEL, "role"));
-
+const dbconnect = require("../dbconnect");
 const z = require("zod");
 const bcrypt = require("bcrypt");
 let UserSchema = z.object({
@@ -16,9 +16,10 @@ let UserSchema = z.object({
 
 module.exports = {
   signup: async function (req, res) {
+    await dbconnect();
     try {
       const parsedResponse = UserSchema.safeParse(req.body);
-
+     
       if (!parsedResponse.success) {
         res.status(422).json({ message: "invalid data" });
         return;
@@ -50,6 +51,7 @@ module.exports = {
   },
 
   search: async function (req, res) {
+    await dbconnect();
     try {
       const resources = await User.find({}, "-password").populate("roles");
       res.status(200).json({
@@ -65,6 +67,7 @@ module.exports = {
   },
 
   find: async function (req, res) {
+    await dbconnect();
     try {
       const resource = await User.findById(req.params.id, "-password");
       if (resource == null) {
@@ -82,6 +85,7 @@ module.exports = {
     }
   },
   login: async function (req, res) {
+    await dbconnect();
     try {
       const UserLogin = z.object({
         email: z.string().email(),
@@ -110,7 +114,7 @@ module.exports = {
         res.status(401).json({ message: "password does not wrong" });
       }
 
-      let token =  await ExistedResource.generateToken();
+      let token = await ExistedResource.generateToken();
       res.status(200).json({
         token: token,
       });
@@ -122,6 +126,7 @@ module.exports = {
     }
   },
   delete: async function (req, res) {
+    await dbconnect();
     try {
       const deletedResource = await User.findByIdAndDelete(req.params.id);
       res.status(200).json({
@@ -134,21 +139,23 @@ module.exports = {
       });
     }
   },
-  update: async function (req,res) {
-    try{
-
+  update: async function (req, res) {
+    await dbconnect();
+    try {
+      let ExistedResource = await User.findByIdAndUpdate(req.params.id, {
+        name: req.body.name,
+        roles: req.body.roles,
+      });
       
-        let ExistedResource = await User.findByIdAndUpdate(req.params.id,{name:req.body.name ,roles: req.body.roles})
-        console.log(ExistedResource)
-        if (ExistedResource == null) {
-          res.status(404).json({ message: "user does not exist" });
-          return;
-        }
-        res.status(201).json({message:'updated successfully'})    
-    }catch(err){
-      console.log(`error while updating user ${err}`)
-      res.status(500).json({message:'internal server error'})
-
+      
+      if (ExistedResource == null) {
+        res.status(404).json({ message: "user does not exist" });
+        return;
+      }
+      res.status(201).json({ message: "updated successfully" });
+    } catch (err) {
+      console.log(`error while updating user ${err}`);
+      res.status(500).json({ message: "internal server error" });
     }
-  }
+  },
 };

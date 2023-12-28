@@ -35,7 +35,7 @@ async function connect() {
 
         if (__configurations.ENVIRONMENT == 'local'){
           const mongod = await MongoMemoryServer.create();
-          __configurations.MONGO_URI = mongod.getUri();
+          __configurations.MONGO_URI =   __configurations.MONGO_URI  ||mongod.getUri();
 
         }
          global.mongoose.promise = mongoose.connect(__configurations.MONGO_URI || "", opts).then((mongoose) => {
