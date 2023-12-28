@@ -7,7 +7,7 @@
 
 
 const mongoose = require('mongoose');
-
+const  {MongoMemoryServer}=  require( 'mongodb-memory-server');
 
 global.mongoose = global.mongoose || { conn: null, promise: null };
 
@@ -32,6 +32,12 @@ async function connect() {
     console.log("---Connecting to MongoDB---");
 
     try {
+
+        if (__configurations.ENVIRONMENT == 'local'){
+          const mongod = await MongoMemoryServer.create();
+          __configurations.MONGO_URI = mongod.getUri();
+
+        }
          global.mongoose.promise = mongoose.connect(__configurations.MONGO_URI || "", opts).then((mongoose) => {
         console.log("---Connected!---");
         return mongoose;

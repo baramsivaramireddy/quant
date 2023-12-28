@@ -12,6 +12,8 @@ const app = express();
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const fs = require("fs");
+const cors = require('cors')
+app.use(cors())
 const swaggerDocument = YAML.load(path.resolve(__dirname, "api-spec.yaml"));
 global.__configurations = require(path.resolve(__dirname, "config.js"));
 global.ROUTE_DIR = __dirname + "/routes/api";
