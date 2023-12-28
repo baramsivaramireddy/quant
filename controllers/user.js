@@ -136,6 +136,8 @@ module.exports = {
   },
   update: async function (req,res) {
     try{
+
+      
         let ExistedResource = await User.findByIdAndUpdate(req.params.id,{name:req.body.name ,roles: req.body.roles})
         console.log(ExistedResource)
         if (ExistedResource == null) {
