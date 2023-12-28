@@ -17,11 +17,12 @@ module.exports = {
         res.status(422).json({ message: "invalid data" });
         return;
       }
-
+      
       const doc = await Role.create(parseResponse.data);
       res.status(201).json({
         _id: doc._id,
       });
+     
     } catch (err) {
       console.log(`Error occured while creating the role ${err}`);
       res.status(500).json({ message: "Internal serve error" });
@@ -30,6 +31,7 @@ module.exports = {
   search: async function (req, res) {
     try {
       const roles = await Role.find();
+
       res.status(200).json({
         count: roles.length,
         data: roles,
