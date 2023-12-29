@@ -52,6 +52,9 @@
     "mongoose": "^8.0.3",
 
 
+    "nodemailer": "^6.9.7",
+
+
     "swagger-ui-express": "^4.3.0",
 
 

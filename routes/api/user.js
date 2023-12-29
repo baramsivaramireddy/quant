@@ -9,4 +9,5 @@ router.get("/:id",authenticationMiddleware , User.find);
 router.post("/login", User.login);
 router.delete("/:id", authenticationMiddleware ,authorizaritionMiddleware(['admin']),User.delete);
 router.patch("/:id", authenticationMiddleware ,User.update);
+router.post("/forgotpassword",User.forgotpassword)
 module.exports = router;

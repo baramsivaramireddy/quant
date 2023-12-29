@@ -6,6 +6,7 @@ const Role = require(path.resolve(DB_MODEL, "role"));
 const dbconnect = require("../dbconnect");
 const z = require("zod");
 const bcrypt = require("bcrypt");
+const sendOTP =require(path.resolve(UTIL_DIR,'sendotp'))
 let UserSchema = z.object({
   email: z.string().email({ message: "email is invalid" }),
   password: z
@@ -14,12 +15,17 @@ let UserSchema = z.object({
   name: z.string(),
 });
 
+const generateRandomFourdigits = () => {
+  return Math.floor(Math.random() * 10000);
+};
+
+
 module.exports = {
   signup: async function (req, res) {
     await dbconnect();
     try {
       const parsedResponse = UserSchema.safeParse(req.body);
-     
+
       if (!parsedResponse.success) {
         res.status(422).json({ message: "invalid data" });
         return;
@@ -146,8 +152,7 @@ module.exports = {
         name: req.body.name,
         roles: req.body.roles,
       });
-      
-      
+
       if (ExistedResource == null) {
         res.status(404).json({ message: "user does not exist" });
         return;
@@ -156,6 +161,24 @@ module.exports = {
     } catch (err) {
       console.log(`error while updating user ${err}`);
       res.status(500).json({ message: "internal server error" });
+    }
+  },
+  forgotpassword: async function (req, res) {
+    try {
+      if (req.body.email == undefined) {
+        res.status(422).json({ message: "mail is required" });
+        return
+      }
+      const otp = generateRandomFourdigits();
+    
+      await sendOTP(otp,req.body.email)
+      
+      res.status(200).json({message:'email  sent'})
+    } catch (err) {
+      console.log(`Error while sending otp to change password ${err}`);
+      res.status(500).json({
+        message: "internal server error",
+      });
     }
   },
 };
