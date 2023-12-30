@@ -12,6 +12,9 @@ const userSchema = mongoose.Schema(
     password: {
       type: String,
     },
+    otp:{
+      type: String,
+    },
     roles: [
       {
         type: mongoose.Schema.Types.ObjectId,

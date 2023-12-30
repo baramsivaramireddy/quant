@@ -6,7 +6,7 @@ const Role = require(path.resolve(DB_MODEL, "role"));
 const dbconnect = require("../dbconnect");
 const z = require("zod");
 const bcrypt = require("bcrypt");
-const sendOTP =require(path.resolve(UTIL_DIR,'sendotp'))
+const sendOTP = require(path.resolve(UTIL_DIR, "sendotp"));
 let UserSchema = z.object({
   email: z.string().email({ message: "email is invalid" }),
   password: z
@@ -18,7 +18,8 @@ let UserSchema = z.object({
 const generateRandomFourdigits = () => {
   return Math.floor(Math.random() * 10000);
 };
-
+// 3 min
+const ExpiryTime = 3 * 60 * 1000;
 
 module.exports = {
   signup: async function (req, res) {
@@ -164,21 +165,83 @@ module.exports = {
     }
   },
   forgotpassword: async function (req, res) {
+    await dbconnect();
+    let emailSchema = z.object({
+      email: z.string().email(),
+    });
     try {
-      if (req.body.email == undefined) {
+      let parsedData = emailSchema.safeParse(req.body);
+      console.log(parsedData);
+      if (!parsedData.success) {
         res.status(422).json({ message: "mail is required" });
-        return
+        return;
       }
       const otp = generateRandomFourdigits();
+
+      let UpdatedResource = await User.findOneAndUpdate(
+        { email: parsedData.data.email },
+        { otp: otp }
+      );
+      if (UpdatedResource == undefined) {
+        res.status(404).json({ message: "user does not exist" });
+        return "";
+      }
     
-      await sendOTP(otp,req.body.email)
-      
-      res.status(200).json({message:'email  sent'})
+      await sendOTP(otp, req.body.email);
+
+      res.status(200).json({ message: " otp sent to email  " });
     } catch (err) {
       console.log(`Error while sending otp to change password ${err}`);
       res.status(500).json({
         message: "internal server error",
       });
+    }
+  },
+  changepassword: async function (req, res) {
+    await dbconnect();
+    try {
+      let changePasswordSchema = z.object({
+        email: z.string().email(),
+        otp: z.string().refine((val) => val.length == 4),
+        password: z.string().min(8),
+      });
+      
+      let parsedData = changePasswordSchema.safeParse(req.body);
+      if (!parsedData.success) {
+        res.status(422).json({ message: "invalid data" });
+        return "";
+      }
+
+      let currentUser = await User.findOne({ email: parsedData.data.email });
+      if (currentUser == undefined) {
+        res.status(404).json({ message: "user does not exist" });
+        return;
+      }
+
+   
+      if (!(currentUser.otp==parsedData.data.otp)) {
+        res.status(409).json({ message: "invalid otp" });
+        return;
+      }
+
+      console.log(new Date() - new Date(currentUser.updatedAt))
+    
+      if (!((new Date() - new Date(currentUser.updatedAt)) <= ExpiryTime)) {
+        // TODO search for valid status code
+        res.status(400).json({ message: "otp expired" });
+        return "";
+      }
+
+      currentUser.password = await bcrypt.hash(
+        parsedData.data.password,
+        __configurations.SALTROUND
+      );
+        await currentUser.save({ timestamps: false})
+
+        res.status(201).json({message:'password updated'})
+    } catch (err) {
+      console.log(`Error occured while changing the password ${err}`);
+      res.status(500).json({ message: "internal server error" });
     }
   },
 };
