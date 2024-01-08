@@ -255,9 +255,64 @@ paths:
           description: 'updated successfully'
         404:
           description: 'not found'
-
+  /api/user/forgotpassword:
+    post:
+      tags:
+        - user
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        422:
+          description: 'invalid data'
+        404:
+          description: 'user does not exit'
+        200:
+          description: 'otp sent successfully'
+        500:
+          description: 'internal server error'
         
-    
+  /api/user/changepassword:
+    post:
+      tags:
+        - user
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: otp is 4 digits and password have to be minimum 8 digits
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                otp:
+                  type: string
+                password:
+                  type: string
+  
+      responses:
+        422:
+          description: 'invalid data'
+        404:
+          description: 'user does not exit'
+        409:
+          description: invalid otp
+        400:
+          description: otp expired
+        201:
+          description: password changed
+        500:
+          description: 'internal server error'
+          
 components:
   securitySchemes:
     BearerAuth:

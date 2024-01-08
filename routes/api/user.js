@@ -7,8 +7,9 @@ router.get("/", authenticationMiddleware ,authorizaritionMiddleware(['admin']),U
 router.post("/signup", User.signup);
 router.get("/:id",authenticationMiddleware , User.find);
 router.post("/login", User.login);
-router.delete("/:id", authenticationMiddleware ,authorizaritionMiddleware(['admin']),User.delete);
-router.patch("/:id", authenticationMiddleware ,User.update);
 router.post("/forgotpassword",User.forgotpassword)
 router.post("/changepassword",User.changepassword)
+router.delete("/:id", authenticationMiddleware ,authorizaritionMiddleware(['admin']),User.delete);
+router.patch("/:id", authenticationMiddleware ,User.update);
+
 module.exports = router;

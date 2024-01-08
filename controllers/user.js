@@ -118,7 +118,8 @@ module.exports = {
         ExistedResource.password
       );
       if (isPasswordMatched == false) {
-        res.status(401).json({ message: "password does not wrong" });
+        res.status(401).json({ message: "password is invalid" });
+        return ''
       }
 
       let token = await ExistedResource.generateToken();
@@ -224,7 +225,7 @@ module.exports = {
         return;
       }
 
-      console.log(new Date() - new Date(currentUser.updatedAt))
+     
     
       if (!((new Date() - new Date(currentUser.updatedAt)) <= ExpiryTime)) {
         // TODO search for valid status code
