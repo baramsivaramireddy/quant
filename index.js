@@ -69,7 +69,7 @@ fs.readdirSync(ROUTE_DIR).forEach((file) => {
 
 if (__configurations.ENVIRONMENT == "local" || __configurations.ENVIRONMENT == "development") {
   app.listen(3000, () => {
-    console.log("app started on port 3000 in local environment");
+    console.log(`app started on port 3000 in ${__configurations.ENVIRONMENT} environment`);
   });
 }
 
