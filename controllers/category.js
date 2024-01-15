@@ -92,6 +92,11 @@ module.exports ={
 
             let docId = req.params.id;
             let updatedDoc =  await Category.findByIdAndUpdate(docId ,parsedResponse.data)
+
+            if (updatedDoc==null){
+                res.status(404).json({message:'not found'})
+                return ''
+            }
             res.status(201).json({message:"updated successfully"})
         
         }

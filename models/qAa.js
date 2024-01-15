@@ -13,7 +13,7 @@ const QandASchema = new mongoose.Schema({
     },
     difficulty: {
         type: String,
-        enum:['esay','medium' ,'hard']
+        enum:['easy','medium' ,'hard']
     },
     type: {
         type: String,
@@ -30,7 +30,10 @@ const QandASchema = new mongoose.Schema({
     },
     options: [mongoose.Schema.Types.Mixed] ,
 
-    correctOption:[mongoose.Schema.Types.Mixed]
+    correctOptions:[mongoose.Schema.Types.Mixed],
+    solution: {
+        type: String
+    }
 })
 
 module.exports = mongoose.model('qAa',QandASchema)

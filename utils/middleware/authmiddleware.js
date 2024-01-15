@@ -27,7 +27,7 @@ module.exports = {
       res.status(500).json({ message: "Internal server error" });
     }
   },
-  authorizaritionMiddleware: function (allowedRoleArray) {
+  authorizationMiddleware: function (allowedRoleArray) {
     return function (req, res, next) {
   
       try {

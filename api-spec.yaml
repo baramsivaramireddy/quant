@@ -13,6 +13,8 @@ tags:
   - name: common
   - name: user
   - name: role
+  - name: categories
+  - name: question
 paths:
   /health-check:
     get:
@@ -23,7 +25,7 @@ paths:
           description: everything is good
         500:
           description: something bad happen
-  /api/role:
+  /api/roles:
     get:
       security:
       - BearerAuth: []
@@ -64,7 +66,7 @@ paths:
           description: invalid input
         500:
           description: internal server error
-  /api/role/{id}:
+  /api/rols/{id}:
     parameters:
       - name: id
         in: path
@@ -312,6 +314,253 @@ paths:
           description: password changed
         500:
           description: 'internal server error'
+          
+  /api/categories:
+    get:
+      tags:
+        - categories
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: 'all categories'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/searchResponse'
+        505:
+          description: internal server error
+    post:
+      tags:
+         - categories
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: 
+                  type: string
+      responses:
+        201: 
+          description: 'resource created '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createResponse'
+        500:
+          description: internal server error
+  /api/categories/{id}:
+    parameters:
+      - in : path
+        name: id
+        required: true
+        schema: 
+          type: string
+    get:
+      tags:
+        - categories
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: 'all categories'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/findResponse'
+        505:
+          description: internal server error
+    delete:
+      tags:
+        - categories
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: 'all categories'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deleteResponse'
+        505:
+          description: internal server error      
+    patch:
+      tags:
+         - categories
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: 
+                  type: string
+      responses:
+        201: 
+          description: 'resource created '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/updateResponse'
+        500:
+          description: internal server error
+    
+  /api/questions:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - question
+      responses:
+        200:
+          description: 'fetched successfully'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/searchResponse'
+        500:
+          description: 'internal server error'
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - question
+        
+      requestBody:
+        description: type  feild can be 'mutliplechoice','singlechoice','fillintheblack' ,'matching' , otpion feild can have any thing . difficulty can be 'easy','medium' ,'hard'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                difficulty:
+                  type: string
+                type: 
+                  type: string
+                category:
+                  type: string
+                isPublished:
+                  type: boolean
+                options: 
+                  type: array
+                  items:
+                    type: object
+                correctOptions:
+                  type: array
+                  items:
+                    type: object
+                solution:
+                  type: string
+                  
+      responses:
+        200:
+          description: 'created a resource'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createResponse'
+        422:
+          description: invalid data
+        500:
+          description: internal server error
+  /api/questions/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: 
+          type: string
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - question
+      responses:
+        200:
+          description: 'fetched successfully'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/findResponse'
+        404:
+          description: not found
+        500:
+          description: internal server error
+    patch:
+      security:
+        - BearerAuth: []
+      tags:
+        - question
+      requestBody:
+        description: type  feild can be 'mutliplechoice','singlechoice','fillintheblack' ,'matching' , otpion feild can have any thing . difficulty can be 'easy','medium' ,'hard'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                difficulty:
+                  type: string
+                type: 
+                  type: string
+                category:
+                  type: string
+                isPublished:
+                  type: boolean
+                options: 
+                  type: array
+                  items:
+                    type: object
+                correctOptions:
+                  type: array
+                  items:
+                    type: object
+                solution:
+                  type: string
+      responses:
+        200:
+          description: 'fetched successfully'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/updateResponse'
+        422:
+          description: invalid data
+        404: 
+          description: not found
+        500:
+          description: internal server error
+    
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+        - question
+      responses:
+        200:
+          description: 'fetched successfully'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deleteResponse'
+        422:
+          description: invalid data
+        404: 
+          description: not found
+        500:
+          description: internal server error
           
 components:
   securitySchemes:
