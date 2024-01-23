@@ -8,7 +8,7 @@ const QandASchema = zod.object({
   description: zod.string(),
   difficulty: zod.enum(["easy", "medium", "hard"]),
   type: zod.enum([
-    "mutliplechoice",
+    "multiplechoice",
     "singlechoice",
     "fillintheblank",
     "matching",
