@@ -10,7 +10,7 @@ const QandASchema = zod.object({
   type: zod.enum([
     "mutliplechoice",
     "singlechoice",
-    "fillintheblack",
+    "fillintheblank",
     "matching",
   ]),
   category: zod.string(),
