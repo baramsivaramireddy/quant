@@ -17,7 +17,7 @@ const QandASchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum:['mutliplechoice','singlechoice','fillintheblank' ,'matching']
+        enum:['multiplechoice','singlechoice','fillintheblank' ,'matching']
     },
     category:{
             type: mongoose.Schema.Types.ObjectId,
